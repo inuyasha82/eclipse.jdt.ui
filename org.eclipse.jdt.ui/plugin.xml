@@ -776,6 +776,17 @@
          <keywordReference id="org.eclipse.jdt.ui.wizards.java"/>
       </wizard>
       <wizard
+            name="%NewSourceTestFolderCreationWizard.label"
+            icon="$nl$/icons/full/etool16/newpackfolder_wiz.svg"
+            category="org.eclipse.jdt.ui.java"
+            class="org.eclipse.jdt.internal.ui.wizards.NewSourceTestFolderCreationWizard"
+            id="org.eclipse.jdt.ui.wizards.NewSourceTestTestCreationWizard">
+         <description>
+            %NewSourceTestFolderCreationWizard.description
+         </description>
+         <keywordReference id="org.eclipse.jdt.ui.wizards.java"/>
+      </wizard>
+      <wizard
             name="%NewSourceFolderCreationWizard.label"
             icon="$nl$/icons/full/etool16/newpackfolder_wiz.svg"
             category="org.eclipse.jdt.ui.java"
@@ -783,17 +794,6 @@
             id="org.eclipse.jdt.ui.wizards.NewSourceFolderCreationWizard">
          <description>
             %NewSourceFolderCreationWizard.description
-         </description>
-         <keywordReference id="org.eclipse.jdt.ui.wizards.java"/>
-      </wizard>
-      <wizard
-            name="%NewSourceTestFolderCreationWizard.label"
-            icon="$nl$/icons/full/etool16/newpackfolder_wiz.svg"
-            category="org.eclipse.jdt.ui.java"
-            class="org.eclipse.jdt.internal.ui.wizards.NewSourceTestFolderCreationWizard"
-            id="org.eclipse.jdt.ui.wizards.NewSourceFolderTestCreationWizard">
-         <description>
-            %NewSourceTestFolderCreationWizard.description
          </description>
          <keywordReference id="org.eclipse.jdt.ui.wizards.java"/>
       </wizard>
