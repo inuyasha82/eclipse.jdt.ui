@@ -19,7 +19,7 @@ import org.eclipse.jdt.core.IClasspathAttribute;
 import org.eclipse.jdt.core.IClasspathEntry;
 import org.eclipse.jdt.core.JavaCore;
 
-public class NewTestSourceFolderWizardPage extends NewFolderWizardPageAbstract {
+public class NewTestSourceFolderWizardPage extends AbstractNewFolderWizardPage {
 
 	private static final String PAGE_NAME= "NewTestSourceFolderWizardPage"; //$NON-NLS-1$
 

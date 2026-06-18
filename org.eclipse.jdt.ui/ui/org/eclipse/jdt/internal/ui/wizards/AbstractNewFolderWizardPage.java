@@ -89,7 +89,7 @@ import org.eclipse.jdt.internal.ui.wizards.dialogfields.LayoutUtil;
 import org.eclipse.jdt.internal.ui.wizards.dialogfields.SelectionButtonDialogField;
 import org.eclipse.jdt.internal.ui.wizards.dialogfields.StringButtonDialogField;
 
-public abstract class NewFolderWizardPageAbstract extends NewElementWizardPage {
+public abstract class AbstractNewFolderWizardPage extends NewElementWizardPage {
 
 	private static final IClasspathAttribute ATTR_IGNORE_OPTIONAL_PROBLEMS_TRUE= JavaCore.newClasspathAttribute(IClasspathAttribute.IGNORE_OPTIONAL_PROBLEMS, "true"); //$NON-NLS-1$
 	private static final String ABSTRACT_PAGE_NAME="NewFolderWizardPageAbstract"; //$NON-NLS-1$
@@ -116,7 +116,7 @@ public abstract class NewFolderWizardPageAbstract extends NewElementWizardPage {
 
 	private IPackageFragmentRoot fCreatedRoot;
 
-	public NewFolderWizardPageAbstract() {
+	public AbstractNewFolderWizardPage() {
 		super(ABSTRACT_PAGE_NAME);
 	}
 
@@ -138,7 +138,7 @@ public abstract class NewFolderWizardPageAbstract extends NewElementWizardPage {
 	protected abstract IClasspathEntry createNewClassPathEntry(IPath path, IPath[] inclusionPatterns, IPath[] exclusionPatterns,IPath newOutputPath, IClasspathAttribute[] attributes);
 	protected abstract IPath createNewOutputPath();
 
-	public NewFolderWizardPageAbstract(String page_name) {
+	public AbstractNewFolderWizardPage(String page_name) {
 		super(page_name);
 		fWorkspaceRoot= ResourcesPlugin.getWorkspace().getRoot();
 
