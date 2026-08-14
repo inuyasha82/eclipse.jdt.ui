@@ -260,6 +260,7 @@ public final class CorrectionMessages extends NLS {
 	public static String UnresolvedElementsSubProcessor_arraychangetomethod_description;
 	public static String UnresolvedElementsSubProcessor_arraychangetolength_description;
 	public static String UnresolvedElementsSubProcessor_addnewkeyword_description;
+	public static String UnresolvedElementsSubProcessor_add_parameter_to_record_definition;
 	public static String JavadocTagsSubProcessor_addjavadoc_method_description;
 	public static String JavadocTagsSubProcessor_addjavadoc_module_description;
 	public static String JavadocTagsSubProcessor_addjavadoc_type_description;
@@ -519,4 +520,5 @@ public final class CorrectionMessages extends NLS {
 	public static String PreviewFeaturesSubProcessor_open_compliance_page_enable_preview_features_info;
 	public static String PreviewFeaturesSubProcessor_open_compliance_properties_page_enable_preview_features;
 	public static String PreviewFeaturesSubProcessor_open_compliance_properties_page_enable_preview_features_info;
+
 }

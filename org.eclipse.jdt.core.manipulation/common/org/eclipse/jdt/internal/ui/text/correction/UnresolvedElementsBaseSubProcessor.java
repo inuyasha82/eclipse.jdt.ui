@@ -1477,7 +1477,7 @@ public abstract class UnresolvedElementsBaseSubProcessor<T> {
 					parameterMismatchs.add((IMethodBinding) binding);
 				}
 			}
-			addParameterMissmatchProposals(context, problem, parameterMismatchs, invocationNode, arguments, proposals);
+			addParameterMismatchProposals(context, problem, parameterMismatchs, invocationNode, arguments, proposals);
 		}
 
 		if (sender == null) {
@@ -1744,7 +1744,7 @@ public abstract class UnresolvedElementsBaseSubProcessor<T> {
 		return false;
 	}
 
-	private void addParameterMissmatchProposals(IInvocationContext context, IProblemLocation problem, List<IMethodBinding> similarElements, ASTNode invocationNode, List<Expression> arguments, Collection<T> proposals) throws CoreException {
+	private void addParameterMismatchProposals(IInvocationContext context, IProblemLocation problem, List<IMethodBinding> similarElements, ASTNode invocationNode, List<Expression> arguments, Collection<T> proposals) throws CoreException {
 		int nSimilarElements= similarElements.size();
 		ITypeBinding[] argTypes= getArgumentTypes(arguments);
 		if (argTypes == null || nSimilarElements == 0)  {
@@ -2299,15 +2299,21 @@ public abstract class UnresolvedElementsBaseSubProcessor<T> {
 			}
 		}
 
-		addParameterMissmatchProposals(context, problem, similarElements, selectedNode, arguments, proposals);
+		addParameterMismatchProposals(context, problem, similarElements, selectedNode, arguments, proposals);
 
 		if (targetBinding.isFromSource()) {
 			ITypeBinding targetDecl= targetBinding.getTypeDeclaration();
 
 			ICompilationUnit targetCU= ASTResolving.findCompilationUnitForBinding(cu, astRoot, targetDecl);
+			String label;
 			if (targetCU != null) {
 				String[] args= new String[] { ASTResolving.getMethodSignature( ASTResolving.getTypeSignature(targetDecl), getParameterTypes(arguments), false) };
-				String label= Messages.format(CorrectionMessages.UnresolvedElementsSubProcessor_createconstructor_description, args);
+				if (targetBinding.isRecord()) {
+					label= Messages.format(CorrectionMessages.UnresolvedElementsSubProcessor_add_parameter_to_record_definition, args);
+				} else {
+					label= Messages.format(CorrectionMessages.UnresolvedElementsSubProcessor_createconstructor_description, args);
+				}
+
 				NewMethodCorrectionProposalCore core= new NewMethodCorrectionProposalCore(label, targetCU, selectedNode, arguments, targetDecl, IProposalRelevance.CREATE_CONSTRUCTOR);
 				T coreToT= newMethodProposalToT(core, ConstructorProposal1);
 				if (coreToT != null)

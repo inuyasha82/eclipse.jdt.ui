@@ -154,6 +154,7 @@ import org.eclipse.jdt.internal.corext.dom.SelectionAnalyzer;
 import org.eclipse.jdt.internal.corext.dom.TokenScanner;
 import org.eclipse.jdt.internal.corext.fix.AddInferredLambdaParameterTypesFixCore;
 import org.eclipse.jdt.internal.corext.fix.AddMissingMethodDeclarationFixCore;
+import org.eclipse.jdt.internal.corext.fix.AddRecordParameterToDefinitionFixCore;
 import org.eclipse.jdt.internal.corext.fix.AddVarLambdaParameterTypesFixCore;
 import org.eclipse.jdt.internal.corext.fix.ChangeLambdaBodyToBlockFixCore;
 import org.eclipse.jdt.internal.corext.fix.ChangeLambdaBodyToExpressionFixCore;
@@ -352,7 +353,8 @@ public class QuickAssistProcessor implements IQuickAssistProcessor {
 					|| getConvertToSwitchProposals(context, coveringNode, null)
 					|| getUnblockSwitchExpressionCaseProposals(context, coveringNode, null)
 					|| getDeprecatedProposal(context, coveringNode, null, null)
-					|| getReplaceQualifiedNameProposals(context, coveringNode, null);
+					|| getReplaceQualifiedNameProposals(context, coveringNode, null)
+					|| getAddRecordParameterToDefinitionProposal(context, coveringNode, null);
 		}
 		return false;
 	}
@@ -437,6 +439,7 @@ public class QuickAssistProcessor implements IQuickAssistProcessor {
 				getStringConcatToTextBlockProposal(context, coveringNode, resultingCollections);
 				getSplitTryResourceProposal(context, coveringNode, resultingCollections);
 				getConvertPatternInstanceofIfStmtToSwitchProposals(context, coveringNode, resultingCollections);
+				getAddRecordParameterToDefinitionProposal(context, coveringNode, resultingCollections);
 			}
 			return resultingCollections.toArray(new IJavaCompletionProposal[resultingCollections.size()]);
 		}
@@ -871,6 +874,12 @@ public class QuickAssistProcessor implements IQuickAssistProcessor {
 			proposal.setCommandId(CONVERT_ANONYMOUS_TO_LOCAL_ID);
 			proposals.add(proposal);
 		}
+		return false;
+	}
+
+	private static boolean getAddRecordParameterToDefinitionProposal(IInvocationContext context, ASTNode node, Collection<ICommandAccess> resultingCollections) {
+		ICompilationUnit cu= context.getCompilationUnit();
+		AddRecordParameterToDefinitionFixCore aptdfc = AddRecordParameterToDefinitionFixCore.createAddRecordParameterType(context.getASTRoot(), node);
 		return false;
 	}
 

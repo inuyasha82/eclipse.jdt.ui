@@ -35,6 +35,7 @@ import org.eclipse.jdt.core.dom.Javadoc;
 import org.eclipse.jdt.core.dom.MethodDeclaration;
 import org.eclipse.jdt.core.dom.Modifier;
 import org.eclipse.jdt.core.dom.PrimitiveType;
+import org.eclipse.jdt.core.dom.RecordDeclaration;
 import org.eclipse.jdt.core.dom.ReturnStatement;
 import org.eclipse.jdt.core.dom.SimpleName;
 import org.eclipse.jdt.core.dom.SingleVariableDeclaration;
@@ -95,6 +96,10 @@ public abstract class AbstractMethodCorrectionProposalCore extends LinkedCorrect
 
 		if (newTypeDecl != null) {
 			ASTRewrite rewrite= ASTRewrite.create(astRoot.getAST());
+			if(this.fSenderBinding.isRecord()) {
+				RecordDeclaration newRecordStub = getRecordStub(rewrite, newTypeDecl);
+				//ASTNodes.replaceButKeepComment(rewrite, newTypeDecl, newRecordStub, null);
+			}
 
 			MethodDeclaration newStub= getStub(rewrite, newTypeDecl);
 
@@ -102,6 +107,7 @@ public abstract class AbstractMethodCorrectionProposalCore extends LinkedCorrect
 			List<BodyDeclaration> members= ASTNodes.getBodyDeclarations(newTypeDecl);
 
 			int insertIndex;
+
 			if (isConstructor()) {
 				insertIndex= findConstructorInsertIndex(members);
 			} else if (!isInDifferentCU) {
@@ -111,10 +117,33 @@ public abstract class AbstractMethodCorrectionProposalCore extends LinkedCorrect
 			}
 			ListRewrite listRewriter= rewrite.getListRewrite(newTypeDecl, property);
 			listRewriter.insertAt(newStub, insertIndex, null);
-
 			return rewrite;
 		}
 		return null;
+	}
+
+	private RecordDeclaration getRecordStub(ASTRewrite rewrite, ASTNode targetTypeDecl) throws CoreException {
+		ImportRewriteContext context=new ContextSensitiveImportRewriteContext(targetTypeDecl, getImportRewrite());
+		AST ast = targetTypeDecl.getAST();
+		RecordDeclaration decl= ast.newRecordDeclaration();
+		SimpleName newNameNode= getNewName(rewrite);
+		ArrayList<String> takenNames= new ArrayList<>();
+		addNewTypeParameters(rewrite, takenNames, decl.typeParameters(), context);
+		decl.setName(newNameNode);
+		List<BodyDeclaration> bodies = ASTNodes.getBodyDeclarations(targetTypeDecl);
+		List<BodyDeclaration> newRecordBodies = ASTNodes.getBodyDeclarations(decl);
+
+		for (IVariableBinding declaredField : fSenderBinding.getDeclaredFields()) {
+			takenNames.add(declaredField.getName());
+		}
+
+		addNewParameters(rewrite, takenNames, decl.recordComponents(), context);
+		for (BodyDeclaration bd: bodies) {
+			BodyDeclaration copiedBd = (BodyDeclaration) ASTNode.copySubtree(ast, bd);
+			newRecordBodies.add(copiedBd);
+		}
+
+		return decl;
 	}
 
 	private MethodDeclaration getStub(ASTRewrite rewrite, ASTNode targetTypeDecl) throws CoreException {
@@ -167,7 +196,6 @@ public abstract class AbstractMethodCorrectionProposalCore extends LinkedCorrect
 			}
 		}
 		decl.setBody(body);
-
 		CodeGenerationSettings settings= JavaPreferencesSettings.getCodeGenerationSettings(getCompilationUnit());
 		if (settings.createComments && !fSenderBinding.isAnonymous()) {
 			String string= CodeGeneration.getMethodComment(getCompilationUnit(), fSenderBinding.getName(), decl, null, String.valueOf('\n'));
@@ -176,6 +204,7 @@ public abstract class AbstractMethodCorrectionProposalCore extends LinkedCorrect
 				decl.setJavadoc(javadoc);
 			}
 		}
+
 		return decl;
 	}
 
