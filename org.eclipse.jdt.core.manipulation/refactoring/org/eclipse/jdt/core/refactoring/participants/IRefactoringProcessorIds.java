@@ -35,6 +35,8 @@ public interface IRefactoringProcessorIds {
 	 *
 	 * The Change Method Signature processor loads {@link ChangeMethodSignatureParticipant}s registered for the
 	 * <code>IMethod</code> whose signature is changed.
+	 *
+	 * @since 1.26
 	 */
 	String CHANGE_METHOD_SIGNATURE_PROCESSOR= "org.eclipse.jdt.ui.changeMethodSignatureRefactoring"; //$NON-NLS-1$
 
