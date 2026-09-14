@@ -367,16 +367,6 @@ public class ChangeRecordSignatureProcessor extends AbstractSignatureProcessor {
 		}
 	}
 
-//	private ClassInstanceCreation resolveClassInstanceCreation(ASTNode node) {
-//		if (node instanceof ClassInstanceCreation) return (ClassInstanceCreation)node;
-//		else {
-//			if(node == null || node instanceof Statement || node instanceof CompilationUnit || node instanceof BodyDeclaration ) {
-//				return null;
-//			}
-//		}
-//		return resolveClassInstanceCreation(node.getParent());
-//	}
-
 	@Override
 	public Object[] getElements() {
 		return new Object[] { fType };
@@ -406,11 +396,6 @@ public class ChangeRecordSignatureProcessor extends AbstractSignatureProcessor {
 				return result;
 			}
 			pm.worked(1);
-
-//			if (fClassInstanceCreation == null) {
-//				String message = Messages.format(RefactoringCoreMessages.ChangeSignatureRefactoring_record_deleted, BasicElementLabels.getFileName(getCu()));
-//				return RefactoringStatus.createFatalErrorStatus(message);
-//			}
 
 			if (pm.isCanceled())
 				throw new OperationCanceledException();
