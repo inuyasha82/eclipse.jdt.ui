@@ -99,7 +99,6 @@ import org.eclipse.jdt.core.dom.Type;
 import org.eclipse.jdt.core.dom.TypeDeclaration;
 import org.eclipse.jdt.core.dom.VariableDeclaration;
 import org.eclipse.jdt.core.dom.VariableDeclarationFragment;
-import org.eclipse.jdt.core.dom.rewrite.ASTRewrite;
 import org.eclipse.jdt.core.dom.rewrite.ImportRewrite;
 import org.eclipse.jdt.core.dom.rewrite.ImportRewrite.ImportRewriteContext;
 import org.eclipse.jdt.core.dom.rewrite.ListRewrite;
@@ -1819,19 +1818,10 @@ public class ChangeSignatureProcessor extends AbstractSignatureProcessor impleme
 			return new NullOccurrenceUpdate(node, cuRewrite, result);
 	}
 
-	abstract class OccurrenceUpdate<N extends ASTNode> {
-		protected final CompilationUnitRewrite fCuRewrite;
-		protected final TextEditGroup fDescription;
-		protected RefactoringStatus fResult;
+	abstract class OccurrenceUpdate<N extends ASTNode> extends AbstractOccurrenceUpdate<N>{
 
 		protected OccurrenceUpdate(CompilationUnitRewrite cuRewrite, TextEditGroup description, RefactoringStatus result) {
-			fCuRewrite= cuRewrite;
-			fDescription= description;
-			fResult= result;
-		}
-
-		protected final ASTRewrite getASTRewrite() {
-			return fCuRewrite.getASTRewrite();
+			super(cuRewrite, description, result);
 		}
 
 		protected final ImportRewrite getImportRewrite() {
@@ -1849,8 +1839,6 @@ public class ChangeSignatureProcessor extends AbstractSignatureProcessor impleme
 		protected int getStartPosition() {
 			return getMethodNameNode().getStartPosition();
 		}
-
-		public abstract void updateNode() throws CoreException;
 
 		protected void registerImportRemoveNode(ASTNode node) {
 			getImportRemover().registerRemovedNode(node);
@@ -1954,11 +1942,6 @@ public class ChangeSignatureProcessor extends AbstractSignatureProcessor impleme
 			}
 		}
 
-		/**
-		 * @return ListRewrite of parameters or arguments
-		 */
-		protected abstract ListRewrite getParamgumentsRewrite();
-
 		protected final void changeParamguments() {
 			for (ParameterInfo info : getParameterInfos()) {
 				if (info.isAdded() || info.isDeleted())
@@ -1972,34 +1955,12 @@ public class ChangeSignatureProcessor extends AbstractSignatureProcessor impleme
 			}
 		}
 
-		/**
-		 * @param info the parameter info
-		 */
-		protected void changeParamgumentName(ParameterInfo info) {
-			// no-op
-		}
-
-		/**
-		 * @param info the parameter info
-		 */
-		protected void changeParamgumentType(ParameterInfo info) {
-			// no-op
-		}
-
 		protected final void replaceTypeNode(Type typeNode, String newTypeName, ITypeBinding newTypeBinding){
 			Type newTypeNode= createNewTypeNode(newTypeName, newTypeBinding);
 			getASTRewrite().replace(typeNode, newTypeNode, fDescription);
 			registerImportRemoveNode(typeNode);
 			getTightSourceRangeComputer().addTightSourceNode(typeNode);
 		}
-
-		/**
-		 * @param info TODO
-		 * @param parameterInfos TODO
-		 * @param nodes TODO
-		 * @return a new method parameter or argument, or <code>null</code> for an empty vararg argument
-		 */
-		protected abstract N createNewParamgument(ParameterInfo info, List<ParameterInfo> parameterInfos, List<N> nodes);
 
 		protected abstract SimpleName getMethodNameNode();
 
@@ -2031,9 +1992,6 @@ public class ChangeSignatureProcessor extends AbstractSignatureProcessor impleme
 			return newTypeNode;
 		}
 
-		protected final TightSourceRangeComputer getTightSourceRangeComputer() {
-			return (TightSourceRangeComputer) fCuRewrite.getASTRewrite().getExtendedSourceRangeComputer();
-		}
 	}
 
 	class ReferenceUpdate extends OccurrenceUpdate<Expression> {

@@ -52,7 +52,6 @@ import org.eclipse.jdt.core.dom.RecordDeclaration;
 import org.eclipse.jdt.core.dom.SimpleName;
 import org.eclipse.jdt.core.dom.SingleVariableDeclaration;
 import org.eclipse.jdt.core.dom.Type;
-import org.eclipse.jdt.core.dom.rewrite.ASTRewrite;
 import org.eclipse.jdt.core.dom.rewrite.ImportRewrite;
 import org.eclipse.jdt.core.dom.rewrite.ImportRewrite.ImportRewriteContext;
 import org.eclipse.jdt.core.dom.rewrite.ListRewrite;
@@ -221,29 +220,11 @@ public class ChangeRecordSignatureProcessor extends AbstractSignatureProcessor {
 
 	}
 
-	abstract class OccurrenceUpdate <N extends ASTNode>{
-	      protected final CompilationUnitRewrite fCuRewrite;
-	      protected final TextEditGroup fDescription;
-	      protected RefactoringStatus fResult;
+	abstract class OccurrenceUpdate <N extends ASTNode> extends AbstractOccurrenceUpdate<N>{
 
 	      protected OccurrenceUpdate(CompilationUnitRewrite cuRewrite, TextEditGroup description, RefactoringStatus result) {
-	          fCuRewrite = cuRewrite;
-	          fDescription = description;
-	          fResult = result;
+	    	  super(cuRewrite, description, result);
 	      }
-
-	      protected final ASTRewrite getASTRewrite() {
-	          return fCuRewrite.getASTRewrite();
-	      }
-
-	      public abstract void updateNode() throws CoreException;
-
-	      /**
-			 * @return ListRewrite of parameters or arguments
-			 * */
-	      protected abstract ListRewrite getParamgumentsRewrite();
-
-	      protected abstract N createNewParamgument(ParameterInfo info, List<ParameterInfo> parameterInfos, List<N> nodes);
 
 	      protected final void reshuffleElements() {
 	    	  ListRewrite listRewrite= getParamgumentsRewrite();
@@ -308,29 +289,11 @@ public class ChangeRecordSignatureProcessor extends AbstractSignatureProcessor {
 				}
 			}
 
-			/**
-			 * @param info the parameter info
-			 */
-			protected void changeParamgumentName(ParameterInfo info) {
-				// no-op
-			}
-
-			/**
-			 * @param info the parameter info
-			 */
-			protected void changeParamgumentType(ParameterInfo info) {
-				// no-op
-			}
-
 			protected final void replaceTypeNode(Type typeNode, String newTypeName, ITypeBinding newTypeBinding){
 				Type newTypeNode= createNewTypeNode(newTypeName, newTypeBinding);
 				getASTRewrite().replace(typeNode, newTypeNode, fDescription);
 				//registerImportRemoveNode(typeNode);
 				getTightSourceRangeComputer().addTightSourceNode(typeNode);
-			}
-
-			protected final TightSourceRangeComputer getTightSourceRangeComputer() {
-				return (TightSourceRangeComputer) fCuRewrite.getASTRewrite().getExtendedSourceRangeComputer();
 			}
 
 			protected final Type createNewTypeNode(String newTypeName, ITypeBinding newTypeBinding) {
