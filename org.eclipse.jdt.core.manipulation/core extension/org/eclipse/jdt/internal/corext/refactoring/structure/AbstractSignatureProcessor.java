@@ -47,7 +47,7 @@ public abstract class AbstractSignatureProcessor extends RefactoringProcessor {
 
 	public abstract int getSourceRangeOffset() throws JavaModelException;
 	abstract ICompilationUnit getCu();
-	abstract boolean isSignatureSameAsInitial() throws JavaModelException;
+	public abstract boolean isSignatureSameAsInitial() throws JavaModelException;
 	public abstract IJavaElement getJavaElementContext();
 	abstract void checkParameterDefaultValue(RefactoringStatus result, ParameterInfo info);
 
@@ -59,7 +59,7 @@ public abstract class AbstractSignatureProcessor extends RefactoringProcessor {
 		return fParameterInfos;
 	}
 
-	StubTypeContext getStubTypeContext() {
+	public StubTypeContext getStubTypeContext() {
 		if (fContextCuStartEnd == null)
 			try {
 				fContextCuStartEnd= TypeContextChecker.createStubTypeContext(getCu(), fBaseCuRewrite.getRoot(), getSourceRangeOffset());

@@ -589,7 +589,7 @@ public class ChangeRecordSignatureProcessor extends AbstractSignatureProcessor {
 	}
 
 	@Override
-	boolean isSignatureSameAsInitial() throws JavaModelException {
+	public boolean isSignatureSameAsInitial() throws JavaModelException {
 		if (fType.getRecordComponents().length == 0 && fParameterInfos.isEmpty()) {
 			return true;
 		}

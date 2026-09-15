@@ -3058,4 +3058,12 @@ public class ChangeSignatureProcessor extends AbstractSignatureProcessor impleme
 			return;
 		}
 	}
+
+	public IDefaultValueAdvisor getDefaultValueAdvisor() {
+		return fDefaultValueAdvisor;
+	}
+
+	public void setDefaultValueAdvisor(IDefaultValueAdvisor defaultValueAdvisor) {
+		fDefaultValueAdvisor= defaultValueAdvisor;
+	}
 }
