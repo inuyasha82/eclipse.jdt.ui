@@ -41,6 +41,10 @@ public abstract class AbstractSignatureProcessor extends RefactoringProcessor {
 	private StubTypeContext fContextCuStartEnd;
 	CompilationUnitRewrite fBaseCuRewrite;
 
+	static final String CONST_CLASS_DECL = "class A{";//$NON-NLS-1$
+	static final String CONST_ASSIGN = " i=";		//$NON-NLS-1$
+	static final String CONST_CLOSE = ";}";			//$NON-NLS-1$
+
 	public abstract int getSourceRangeOffset() throws JavaModelException;
 	abstract ICompilationUnit getCu();
 	abstract boolean isSignatureSameAsInitial() throws JavaModelException;

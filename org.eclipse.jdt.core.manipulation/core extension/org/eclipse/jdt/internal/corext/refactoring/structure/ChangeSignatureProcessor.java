@@ -198,9 +198,6 @@ public class ChangeSignatureProcessor extends AbstractSignatureProcessor impleme
 	private ReturnTypeInfo fReturnTypeInfo;
 	private String fMethodName;
 	private int fVisibility;
-	private static final String CONST_CLASS_DECL = "class A{";//$NON-NLS-1$
-	private static final String CONST_ASSIGN = " i=";		//$NON-NLS-1$
-	private static final String CONST_CLOSE = ";}";			//$NON-NLS-1$
 
 	private int fOldVarargIndex; // initialized in checkVarargs()
 
