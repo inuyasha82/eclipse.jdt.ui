@@ -156,6 +156,7 @@ import org.eclipse.jdt.internal.corext.dom.TokenScanner;
 import org.eclipse.jdt.internal.corext.fix.AddInferredLambdaParameterTypesFixCore;
 import org.eclipse.jdt.internal.corext.fix.AddMissingMethodDeclarationFixCore;
 import org.eclipse.jdt.internal.corext.fix.AddVarLambdaParameterTypesFixCore;
+import org.eclipse.jdt.internal.corext.fix.AutoFillClassFromConstructorFixCore;
 import org.eclipse.jdt.internal.corext.fix.ChangeLambdaBodyToBlockFixCore;
 import org.eclipse.jdt.internal.corext.fix.ChangeLambdaBodyToExpressionFixCore;
 import org.eclipse.jdt.internal.corext.fix.CleanUpConstants;
@@ -333,6 +334,7 @@ public class QuickAssistProcessor implements IQuickAssistProcessor {
 					|| getConvertLambdaToMethodReferenceProposal(context, coveringNode, null)
 					|| getConvertToSwitchExpressionProposals(context, coveringNode, null)
 					|| getConvertForLoopToForEachProposal(context, coveringNode, null)
+					|| getConstructorAutoFillProposal(context, coveringNode, null)
 					|| getFixParenthesesInLambdaExpression(context, coveringNode, null)
 					|| getRemoveBlockProposals(context, coveringNode, null)
 					|| getMakeVariableDeclarationFinalProposals(context, null)
@@ -424,6 +426,7 @@ public class QuickAssistProcessor implements IQuickAssistProcessor {
 					getConvertIterableLoopProposal(context, coveringNode, resultingCollections);
 				getConvertToIOPrintProposal(context, coveringNode, resultingCollections);
 				getConvertForLoopToForEachProposal(context, coveringNode, resultingCollections);
+				getConstructorAutoFillProposal(context, coveringNode, resultingCollections);
 				getUnnecessaryArrayCreationProposal(context, coveringNode, resultingCollections);
 				getConvertEnhancedForLoopProposal(context, coveringNode, resultingCollections);
 				getRemoveBlockProposals(context, coveringNode, resultingCollections);
@@ -512,6 +515,17 @@ public class QuickAssistProcessor implements IQuickAssistProcessor {
 			return true;
 		}
 
+		return false;
+	}
+
+	private static boolean getConstructorAutoFillProposal(IInvocationContext context, ASTNode coveringNode, ArrayList<ICommandAccess> resultingCollections) {
+		// TODO Auto-generated method stub
+		MethodDeclaration methodDeclNode = ASTResolving.findParentMethodDeclaration(coveringNode);
+		if (methodDeclNode == null) {
+			return false;
+		}
+
+		AutoFillClassFromConstructorFixCore autoFillCore = AutoFillClassFromConstructorFixCore.createAutoFillFromConstructorFixCore(methodDeclNode);
 		return false;
 	}
 
