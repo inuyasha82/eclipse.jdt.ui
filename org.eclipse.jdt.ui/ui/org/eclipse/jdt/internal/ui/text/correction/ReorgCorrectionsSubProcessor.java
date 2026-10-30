@@ -424,6 +424,34 @@ public class ReorgCorrectionsSubProcessor extends ReorgCorrectionsBaseSubProcess
 		}
 	}
 
+	private static boolean isVersionLTS(String version) {
+		int numericVersion = Integer.parseInt(version);
+		return numericVersion == 8 || numericVersion == 11 || (numericVersion >= 17 && (numericVersion - 17) % 4 == 0);
+	}
+
+	private static String getNextLTS(String version) {
+		int numericVersion = Integer.parseInt(version);
+		if(isVersionLTS(version)) {
+			return version; //is Already at latest LTS
+		}
+		if (numericVersion<=8) {
+			return JavaCore.VERSION_1_8;
+		}
+		if (numericVersion<=11) {
+			return JavaCore.VERSION_11;
+		}
+		if (numericVersion <= 17) {
+			return JavaCore.VERSION_17;
+		}
+		if (numericVersion > 17) {
+			int numberOfReleasesToAdd = (numericVersion - 17)/4 + ((numericVersion - 17)%4==0? 0 : 1);
+			int nextTLS=17 + 4*numberOfReleasesToAdd;
+			if (nextTLS < Integer.parseInt(JavaCore.latestSupportedJavaVersion()))
+				return Integer.toString(nextTLS);
+		}
+		return null;
+	}
+
 	/**
 	 * Adds a proposal to increase the compiler compliance level as well as set --enable-previews
 	 * option.
@@ -442,6 +470,13 @@ public class ReorgCorrectionsSubProcessor extends ReorgCorrectionsBaseSubProcess
 			proposals.add(new ChangeToRequiredCompilerCompliance(label1, project, false, requiredVersion, enablePreviews, IProposalRelevance.CHANGE_PROJECT_COMPLIANCE));
 		} else {
 			proposals.add(new ChangeToRequiredCompilerCompliance(label1, project, false, requiredVersion, IProposalRelevance.CHANGE_PROJECT_COMPLIANCE));
+			if(!isVersionLTS(requiredVersion)) {
+				String nextLTS = JavaCore.getNextLTS(requiredVersion);
+				if(nextLTS != null) {
+					String label2= Messages.format(CorrectionMessages.ReorgCorrectionsSubProcessor_change_project_compliance_description_lts, nextLTS);
+					proposals.add(new ChangeToRequiredCompilerCompliance(label2, project, false, nextLTS, IProposalRelevance.CHANGE_PROJECT_COMPLIANCE));
+				}
+			}
 		}
 
 
